@@ -1,43 +1,31 @@
-DATA: lt_fields TYPE TABLE OF dfies,
-      ls_fields LIKE LINE OF lt_fields.
+*&---------------------------------------------------------------------*
+*&  Include           ZHR_FACTURAS_TOP
+*&---------------------------------------------------------------------*
 
-ls_fields-fieldname = 'CLIENTE_ID'.
-ls_fields-ROLLNAME = 'ZCLIENTES'.
-ls_fields-DATATYPE = 'CHAR'.
-ls_fields-LENG = 10.
-APPEND ls_fields TO lt_fields.
-CLEAR ls_fields.
+REPORT  zhr_facturas.
+data: param,lt_output type string.
 
-ls_fields-fieldname = 'NOMBRE'.
-ls_fields-ROLLNAME = 'ZCLIENTES'.
-ls_fields-DATATYPE = 'CHAR'.
-ls_fields-LENG = 50.
-APPEND ls_fields TO lt_fields.
-CLEAR ls_fields.
+DATA: BEGIN OF ty_cliente,
+         cliente_id TYPE c LENGTH 10,
+         nombre TYPE string,
+         direccion TYPE string,
+         telefono TYPE string,
+       END OF ty_cliente.
 
-ls_fields-fieldname = 'DIRECCION'.
-ls_fields-ROLLNAME = 'ZCLIENTES'.
-ls_fields-DATATYPE = 'CHAR'.
-ls_fields-LENG = 100.
-APPEND ls_fields TO lt_fields.
-CLEAR ls_fields.
+DATA: BEGIN OF ty_producto,
+         producto_id TYPE c LENGTH 10,
+         descripcion TYPE string,
+         precio TYPE p LENGTH 10 DECIMALS 2,
+       END OF ty_producto.
 
-ls_fields-fieldname = 'TELEFONO'.
-ls_fields-ROLLNAME = 'ZCLIENTES'.
-ls_fields-DATATYPE = 'CHAR'.
-ls_fields-LENG = 20.
-APPEND ls_fields TO lt_fields.
-CLEAR ls_fields.
+DATA: BEGIN OF ty_factura,
+         factura_id TYPE c LENGTH 10,
+         cliente_id TYPE c LENGTH 10,
+         producto_id TYPE c LENGTH 10,
+         cantidad TYPE i,
+         total TYPE p LENGTH 10 DECIMALS 2,
+       END OF ty_factura.
 
-CALL FUNCTION 'DDIF_TABL_GET_AND_PUT'
-  EXPORTING
-    operation = 'INS'
-    name      = 'ZCLIENTES'
-  TABLES
-    dfies_tab = lt_fields.
-
-IF sy-subrc = 0.
-  WRITE: 'Tabla ZCLIENTES creada exitosamente.'.
-ELSE.
-  WRITE: 'Error al crear la tabla ZCLIENTES.'.
-ENDIF.
+DATA: lt_clientes LIKE TABLE OF ty_cliente,
+      lt_productos LIKE TABLE OF ty_producto,
+      lt_facturas LIKE TABLE OF ty_factura.
